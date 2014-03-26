@@ -77,12 +77,12 @@ module TeenyURL
   ROUTER = Tipi::Router.new do
     resource Root do
       path '/urls/{id}', to: 'url', returns: URL
-      action :POST, '/urls', to: 'create'
+      post '/urls', to: 'create'
     end
 
     resource URL do
-      action :GET, to: 'lookup'
-      action :GET, '/redirect', to: 'redirect'
+      get to: 'lookup'
+      get '/redirect', to: 'redirect'
     end
   end
 
