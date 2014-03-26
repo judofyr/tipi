@@ -51,6 +51,23 @@ module Tipi
 
       assert res.update(name: "Bob")
     end
+
+    it "stores information about methods" do
+      sub = Class.new(Resource) do
+        input "{ name: String }"
+        output "{ status: String }"
+        stability :stable
+        option_keys :page
+        def list
+        end
+      end
+
+      assert info = sub.action_info(:list)
+      assert info.input_type
+      assert info.output_type
+      assert_equal :stable, info.stability
+      assert_equal [:page], info.option_keys
+    end
   end
 end
 
