@@ -32,20 +32,27 @@ module Tipi
       proc do |env, obj, args|
         extra_args = []
         extra_args << parse_body(env) if has_input
-        extra_args << parse_query(env, keys) if keys
+        extra_args << parse_query(env['QUERY_STRING'], keys) if keys
         obj.send(target, *args, *extra_args)
       end
     end
 
+    JSON_TYPE = 'application/json'.freeze
+
     def parse_body(env)
-      JSON.parse(env['rack.input'].read)
+      case env['CONTENT_TYPE']
+      when 'application/x-www-form-urlencoded'
+        parse_query(env['rack.input'].read, nil)
+      when JSON_TYPE
+        JSON.parse(env['rack.input'].read)
+      end
     end
 
-    def parse_query(env, keys)
+    def parse_query(str, keys)
       res = {}
-      env['QUERY_STRING'].split('&').each do |part|
+      str.split('&').each do |part|
         key, value = part.split('=', 2)
-        if keys.include?(key)
+        if keys.nil? || keys.include?(key)
           value = URI.decode_www_form_component(value)
           res[key.to_sym] = value
         end
@@ -58,12 +65,12 @@ module Tipi
         obj.to_response
       else
         str = obj.to_json
-        [200,{'Content-Type'=>'application/json'},[str]]
+        [200,{'Content-Type'=>JSON_TYPE},[str]]
       end
     end
 
     def not_found
-      [404,{'Content-Type'=>'application/json'},[]]
+      [404,{'Content-Type'=>JSON_TYPE},[]]
     end
   end
 end
