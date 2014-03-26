@@ -11,10 +11,10 @@ module Tipi
     def self.system
       return @system if defined? @system
 
-      if Resource === superclass
-        @system = superclass.system
-      else
+      if self == Resource
         @system = Finitio::DEFAULT_SYSTEM
+      else
+        @system = superclass.system
       end
     end
 

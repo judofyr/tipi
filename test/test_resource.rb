@@ -25,6 +25,15 @@ module Tipi
       assert res.update(name: "Bob")
     end
 
+    it "inherits Finitio systems" do
+      main = Class.new(Resource) do
+        import "Hash = .Hash"
+      end
+
+      sub = Class.new(main)
+      assert sub.system['Hash']
+    end
+
     it "can import Finitio strings" do
       sub = Class.new(Resource) do
         import "Hash = .Hash"
