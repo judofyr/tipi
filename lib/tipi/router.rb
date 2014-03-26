@@ -57,6 +57,12 @@ module Tipi
         end
       end
 
+      def get(*args)    action(:GET,    *args) end
+      def post(*args)   action(:POST,   *args) end
+      def put(*args)    action(:PUT,    *args) end
+      def patch(*args)  action(:PATCH,  *args) end
+      def delete(*args) action(:DELETE, *args) end
+
       def path(pattern, to:, returns:)
         add_route do |route|
           route.target = to
