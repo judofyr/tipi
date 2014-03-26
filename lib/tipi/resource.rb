@@ -68,6 +68,7 @@ module Tipi
         @current_action_info = nil
         action_infos[name] = action_info
         action_info.decorate(self, name)
+        action_info.freeze
       end
     end
   end

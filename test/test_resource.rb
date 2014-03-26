@@ -63,6 +63,7 @@ module Tipi
       end
 
       assert info = sub.action_info(:list)
+      assert info.frozen?
       assert info.input_type
       assert info.output_type
       assert_equal :stable, info.stability
