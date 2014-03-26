@@ -62,7 +62,7 @@ module Tipi
     def self.stability(stability)
       current_action_info.stability = stability
     end
-    
+
     def self.method_added(name)
       if action_info = @current_action_info
         @current_action_info = nil
