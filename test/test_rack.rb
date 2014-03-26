@@ -17,6 +17,16 @@ module Tipi
           options
         end
 
+        class WeirdResponse
+          def to_response
+            [409,{},['Foo']]
+          end
+        end
+
+        def custom
+          WeirdResponse.new
+        end
+
         def users
           Users.new(state)
         end
@@ -54,6 +64,7 @@ module Tipi
           resource Root do
             action :GET, to: 'index'
             action :GET, '/params', to: 'params'
+            action :GET, '/custom', to: 'custom'
             path '/users', to: 'users', returns: Users
           end
 
@@ -123,6 +134,12 @@ module Tipi
         res = mock_request.post('/users/123', input: '{"name":"Bob"}')
         assert_equal 200, res.status
         assert_equal '{"name":"Bob"}', res.body
+      end
+
+      it "can generate custom responses" do
+        res = mock_request.get('/custom')
+        assert_equal 409, res.status
+        assert_equal 'Foo', res.body
       end
     end
   end

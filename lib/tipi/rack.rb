@@ -55,8 +55,12 @@ module Tipi
     end
 
     def respond(obj)
-      str = obj.to_json
-      [200,{'Content-Type'=>'application/json'},[str]]
+      if obj.respond_to?(:to_response)
+        obj.to_response
+      else
+        str = obj.to_json
+        [200,{'Content-Type'=>'application/json'},[str]]
+      end
     end
 
     def not_found
