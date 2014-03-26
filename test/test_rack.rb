@@ -80,15 +80,16 @@ module Tipi
         end
 
         def self.matcher
-          ROUTER.finalize
+          @matcher ||= ROUTER.finalize
+        end
+
+        def self.match(*args)
+          matcher.match(*args)
         end
 
         def self.root
           Root.new({})
         end
-      end
-
-      let(:router) do
       end
 
       let(:app) do

@@ -5,7 +5,6 @@ module Tipi
   class Rack
     def initialize(service)
       @service = service
-      @matcher = service.matcher
       @invokers = Hash.new { |h, k| h[k] = invoker_for(*k) }
     end
 
@@ -15,7 +14,7 @@ module Tipi
       obj = @service.root
       resource = obj.class
 
-      res = @matcher.match(resource, verb, path)
+      res = @service.match(resource, verb, path)
       return not_found if res.empty?
 
       res.each do |resource, target, args|
