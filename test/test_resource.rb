@@ -69,6 +69,19 @@ module Tipi
       assert_equal :stable, info.stability
       assert_equal [:page], info.option_keys
     end
+
+    it "can redirect" do
+      res = Resource.new({})
+      redirect = res.redirect_response("http://vg.no/")
+      assert_instance_of Redirect, redirect
+    end
+
+    it "can raise not found" do
+      res = Resource.new({})
+      assert_raises NotFound do
+        res.raise_not_found
+      end
+    end
   end
 end
 

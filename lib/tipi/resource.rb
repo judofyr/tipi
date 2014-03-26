@@ -1,3 +1,4 @@
+require 'tipi'
 require 'finitio'
 
 module Tipi
@@ -6,6 +7,14 @@ module Tipi
 
     def initialize(state)
       @state = state
+    end
+
+    def raise_not_found
+      raise NotFound
+    end
+
+    def redirect_response(*args)
+      Redirect.new(*args)
     end
 
     def self.system
