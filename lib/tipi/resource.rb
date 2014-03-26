@@ -29,7 +29,7 @@ module Tipi
         return unless input_type = self.input_type
         orig = klass.instance_method(name)
         klass.send(:define_method, name) do |*args|
-          args[0] = input_type.dress(args[0])
+          args[0] = input_type.dress(args[0]) if args.size > 0
           orig.bind(self).call(*args)
         end
       end
