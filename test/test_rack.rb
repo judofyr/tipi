@@ -60,7 +60,13 @@ module Tipi
       end
 
       class Service
-        ROUTER = Router.new do
+        def self.root
+          Root.new({})
+        end
+      end
+
+      let(:router) do
+        Router.new do
           resource Root do
             action :GET, to: 'index'
             action :GET, '/params', to: 'params'
@@ -78,22 +84,10 @@ module Tipi
             action :POST, to: 'update'
           end
         end
-
-        def self.matcher
-          @matcher ||= ROUTER.finalize
-        end
-
-        def self.match(*args)
-          matcher.match(*args)
-        end
-
-        def self.root
-          Root.new({})
-        end
       end
 
       let(:app) do
-        Rack.new(Service)
+        Rack.new(Service, router)
       end
 
       let(:mock_request) do

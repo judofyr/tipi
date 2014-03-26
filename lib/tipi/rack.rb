@@ -3,8 +3,9 @@ require 'uri'
 
 module Tipi
   class Rack
-    def initialize(service)
+    def initialize(service, router)
       @service = service
+      @matcher = router.finalize
       @invokers = Hash.new { |h, k| h[k] = invoker_for(*k) }
     end
 
@@ -14,7 +15,7 @@ module Tipi
       obj = @service.root
       resource = obj.class
 
-      res = @service.match(resource, verb, path)
+      res = @matcher.match(resource, verb, path)
       return not_found if res.empty?
 
       res.each do |resource, target, args|
