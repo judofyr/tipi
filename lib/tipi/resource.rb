@@ -31,6 +31,39 @@ module Tipi
       @system = system.parse(str)
     end
 
+    class Tuple
+      def initialize(values = {})
+        @values = values
+      end
+    end
+
+    def self.AutoTuple(name)
+      type = system[name.to_s]
+      raise ArgumentError, "could not find type: #{name}" if type.nil?
+      klass = Class.new(Tuple)
+
+      # Define accessors
+      type.heading.map(&:name).each do |name|
+        klass.send(:define_method, name) do
+          @values[name]
+        end
+      end
+
+      # Override #dress to always return an instance of this class
+      type.define_singleton_method(:dress) do |*args|
+        res = super(*args)
+        res = klass.new(res) unless res.is_a?(klass)
+        res
+      end
+
+      # Define #dress
+      klass.define_singleton_method(:dress) do |*args|
+        type.dress(*args)
+      end
+
+      klass
+    end
+
     class ActionInfo
       attr_accessor :input_type, :output_type, :option_keys, :stability
 

@@ -82,6 +82,52 @@ module Tipi
         res.raise_not_found
       end
     end
+
+    describe "resource with custom tuple class" do
+      let(:resource_class) do
+        Class.new(Resource) do
+          parse_system "ShortURL = { id: String, url: String }"
+        end
+      end
+
+      let(:short_url_class) do
+        resource_class.AutoTuple :ShortURL
+      end
+
+      before do
+        # Ensure this has been loaded
+        short_url_class
+      end
+
+      it "defines accessors" do
+        obj = short_url_class.new(id: "123", url: "http://example.com/")
+        assert_equal "123", obj.id
+        assert_equal "http://example.com/", obj.url
+      end
+
+      it "coerces actions" do
+        resource_class.class_eval do
+          input "ShortURL"
+          def update(data)
+            data
+          end
+        end
+
+        res = resource_class.new({})
+        obj = res.update(id: "123", url: "http://example.com/")
+        assert_instance_of short_url_class, obj
+        assert_equal "123", obj.id
+        assert_equal "http://example.com/", obj.url
+      end
+
+      it "provides #dress on the tuple class" do
+        assert_raises Finitio::TypeError do
+          short_url_class.dress(id: 123)
+        end
+
+        assert_instance_of short_url_class, short_url_class.dress(id: "123", url: "http://example.com/")
+      end
+    end
   end
 end
 
