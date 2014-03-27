@@ -1,4 +1,4 @@
-require_relative 'helper'
+require_relative '../helper'
 require 'tipi/rack'
 require 'tipi/router'
 require 'tipi/resource'
