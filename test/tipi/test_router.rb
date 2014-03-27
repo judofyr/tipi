@@ -31,7 +31,7 @@ module Tipi
     let(:bar_resource) do
       router.resource(bar)
     end
-      
+
     let(:foo_builder) do
       foo_resource.builder
     end
