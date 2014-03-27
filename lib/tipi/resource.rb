@@ -9,8 +9,8 @@ module Tipi
       @state = state
     end
 
-    def raise_not_found
-      raise NotFound
+    def raise_not_found(msg = nil)
+      raise NotFound, msg
     end
 
     def redirect_response(*args)

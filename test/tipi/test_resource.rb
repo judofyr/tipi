@@ -94,9 +94,18 @@ module Tipi
 
     it "can raise not found" do
       res = Resource.new({})
-      assert_raises NotFound do
+      ex = assert_raises NotFound do
         res.raise_not_found
       end
+      assert_equal "Tipi::NotFound", ex.message
+    end
+
+    it "can raise not found with custom message" do
+      res = Resource.new({})
+      ex = assert_raises NotFound do
+        res.raise_not_found "can't find this"
+      end
+      assert_equal "can't find this", ex.message
     end
 
     describe "resource with custom tuple class" do
