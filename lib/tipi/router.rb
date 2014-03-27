@@ -49,7 +49,12 @@ module Tipi
         self
       end
 
-      def action(verb, pattern = nil, to:)
+      def rarg(key)
+        name = caller_locations[0].label
+        raise ArgumentError, "#{key.inspect} is a required argument for ##{name}"
+      end
+
+      def action(verb, pattern = nil, to:rarg(:to))
         add_route do |route|
           route.verb = verb
           route.target = to
@@ -63,7 +68,7 @@ module Tipi
       def patch(*args)  action(:PATCH,  *args) end
       def delete(*args) action(:DELETE, *args) end
 
-      def path(pattern, to:, returns:)
+      def path(pattern, to:rarg(:to), returns:rarg(:returns))
         add_route do |route|
           route.target = to
           route.pattern = pattern

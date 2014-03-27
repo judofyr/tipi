@@ -46,6 +46,30 @@ module Tipi
       end
     end
 
+    it "#action requires :to" do
+      res = assert_raises(ArgumentError) do
+        foo_resource.action(:GET)
+      end
+      assert_match /:to/, res.message
+      assert_match /#action/, res.message
+    end
+
+    it "#path requires :to" do
+      res = assert_raises(ArgumentError) do
+        foo_resource.path('/bob', returns: 123)
+      end
+      assert_match /:to/, res.message
+      assert_match /#path/, res.message
+    end
+
+    it "#path requires :returns" do
+      res = assert_raises(ArgumentError) do
+        foo_resource.path('/bob', to: 'bob')
+      end
+      assert_match /:returns/, res.message
+      assert_match /#path/, res.message
+    end
+
     describe "with basic actions" do
       before do
         foo_resource.action(:GET, to: 'index')
