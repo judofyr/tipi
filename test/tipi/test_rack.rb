@@ -68,20 +68,20 @@ module Tipi
       let(:router) do
         Router.new do
           resource Root do
-            action :GET, to: 'index'
-            action :GET, '/params', to: 'params'
-            action :GET, '/custom', to: 'custom'
+            get to: 'index'
+            get '/params', to: 'params'
+            get '/custom', to: 'custom'
             path '/users', to: 'users', returns: Users
           end
 
           resource Users do
-            action :GET, to: 'list'
+            get to: 'list'
             path '/{id}', to: '[]', returns: User
           end
 
           resource User do
-            action :GET, to: 'info'
-            action :POST, to: 'update'
+            get to: 'info'
+            post to: 'update'
           end
         end
       end
