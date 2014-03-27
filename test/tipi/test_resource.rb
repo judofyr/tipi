@@ -25,6 +25,22 @@ module Tipi
       assert res.update(name: "Bob")
     end
 
+    it "handles output validation" do
+      sub = Class.new(Resource) do
+        output "{ name: String }"
+        def update(data)
+          data
+        end
+      end
+
+      res = sub.new({})
+      assert_raises(Finitio::TypeError) do
+        res.update({})
+      end
+
+      assert res.update(name: "Bob")
+    end
+
     it "inherits Finitio systems" do
       main = Class.new(Resource) do
         parse_system "Hash = .Hash"

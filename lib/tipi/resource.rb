@@ -68,11 +68,16 @@ module Tipi
       attr_accessor :input_type, :output_type, :option_keys, :stability
 
       def decorate(klass, name)
-        return unless input_type = self.input_type
+        input_type = self.input_type
+        output_type = self.output_type
+        return if input_type.nil? && output_type.nil?
+
         orig = klass.instance_method(name)
         klass.send(:define_method, name) do |*args|
-          args[0] = input_type.dress(args[0]) if args.size > 0
-          orig.bind(self).call(*args)
+          args[0] = input_type.dress(args[0]) if input_type && args.size > 0
+          res = orig.bind(self).call(*args)
+          res = output_type.dress(res) if output_type
+          res
         end
       end
     end
