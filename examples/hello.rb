@@ -32,7 +32,7 @@ module TeenyURL
 
   ## Setup a base class for all our Resources
   class Resource < Tipi::Resource
-    import <<-EOF
+    parse_system <<-EOF
       ShortURL = { id: String, url: String }
     EOF
 

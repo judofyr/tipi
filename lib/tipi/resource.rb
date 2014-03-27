@@ -27,7 +27,7 @@ module Tipi
       end
     end
 
-    def self.import(str)
+    def self.parse_system(str)
       @system = system.parse(str)
     end
 

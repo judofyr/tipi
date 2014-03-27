@@ -27,7 +27,7 @@ module Tipi
 
     it "inherits Finitio systems" do
       main = Class.new(Resource) do
-        import "Hash = .Hash"
+        parse_system "Hash = .Hash"
       end
 
       sub = Class.new(main)
@@ -36,7 +36,7 @@ module Tipi
 
     it "can import Finitio strings" do
       sub = Class.new(Resource) do
-        import "Hash = .Hash"
+        parse_system "Hash = .Hash"
 
         input "Hash"
         def update(foo)
