@@ -27,6 +27,10 @@ module Tipi
           WeirdResponse.new
         end
 
+        def initial_state
+          state[:foo]
+        end
+
         def users
           Users.new(state)
         end
@@ -71,6 +75,7 @@ module Tipi
             get to: 'index'
             get '/params', to: 'params'
             get '/custom', to: 'custom'
+            get '/initial_state', to: 'initial_state'
             path '/users', to: 'users', returns: Users
           end
 
@@ -141,6 +146,16 @@ module Tipi
         res = mock_request.get('/custom')
         assert_equal 409, res.status
         assert_equal 'Foo', res.body
+      end
+
+      it "can set initial state" do
+        app.setup_root = proc do |root, env|
+          root.state[:foo] = env['rack.version']
+        end
+
+        res = mock_request.get('/initial_state')
+        assert_equal 200, res.status
+        assert_equal "[1,2]", res.body
       end
     end
   end

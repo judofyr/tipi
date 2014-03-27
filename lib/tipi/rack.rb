@@ -3,6 +3,8 @@ require 'uri'
 
 module Tipi
   class Rack
+    attr_accessor :setup_root
+
     def initialize(service, router)
       @service = service
       @matcher = router.finalize
@@ -13,6 +15,7 @@ module Tipi
       path = env['PATH_INFO']
       verb = env['REQUEST_METHOD'].to_sym
       obj = @service.root
+      setup_root.call(obj, env) if setup_root
       resource = obj.class
 
       res = @matcher.match(resource, verb, path)
