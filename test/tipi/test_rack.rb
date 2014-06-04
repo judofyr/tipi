@@ -136,6 +136,12 @@ module Tipi
         assert_equal '{"name":"Bob"}', res.body
       end
 
+      it "handles post body with charset" do
+        res = mock_request.post('/users/123', input: '{"name":"Bob"}', "CONTENT_TYPE" => 'application/json; charset=utf-8')
+        assert_equal 200, res.status
+        assert_equal '{"name":"Bob"}', res.body
+      end
+
       it "handles post body with formdata" do
         res = mock_request.post('/users/123', params: { name: "Bob" })
         assert_equal 200, res.status

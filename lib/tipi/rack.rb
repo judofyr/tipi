@@ -44,7 +44,10 @@ module Tipi
     JSON_TYPE = 'application/json'.freeze
 
     def parse_body(env)
-      case env['CONTENT_TYPE']
+      ct = env['CONTENT_TYPE']
+      return unless ct
+
+      case ct.split(';').first
       when 'application/x-www-form-urlencoded'
         parse_query(env['rack.input'].read, nil)
       when JSON_TYPE
