@@ -20,6 +20,6 @@ application doesn't have to access your API over HTTP, it can just talk
 directly to the classes.
 
 The value of Tipi is that it puts certain constraints on your API. These
-constraints make it possible to always switch out the backend your
+constraints make it possible to always switch out the backend you're
 talking to.
 
