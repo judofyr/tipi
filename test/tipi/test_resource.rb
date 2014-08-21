@@ -18,7 +18,7 @@ module Tipi
       end
 
       res = sub.new({})
-      assert_raises(Finitio::TypeError) do
+      assert_raises(Tipi::TypeError) do
         res.update({})
       end
 
@@ -61,7 +61,7 @@ module Tipi
       end
 
       res = sub.new({})
-      assert_raises(Finitio::TypeError) do
+      assert_raises(Tipi::TypeError) do
         res.update(123)
       end
 
@@ -109,4 +109,3 @@ module Tipi
     end
   end
 end
-
