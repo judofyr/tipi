@@ -2,6 +2,8 @@ require 'tipi'
 require 'finitio'
 
 module Tipi
+
+
   class Resource
     attr_reader :state
 
@@ -41,7 +43,11 @@ module Tipi
 
         orig = klass.instance_method(name)
         klass.send(:define_method, name) do |*args|
-          args[0] = input_type.dress(args[0]) if input_type && args.size > 0
+          begin
+            args[0] = input_type.dress(args[0]) if input_type && args.size > 0
+          rescue Finitio::TypeError => ex
+            raise Tipi::TypeError.new("Invalid input #{args[0]} for #{klass} (#{ex})")
+          end
           res = orig.bind(self).call(*args)
           res = output_type.dress(res) if output_type
           res
@@ -86,5 +92,7 @@ module Tipi
       end
     end
   end
-end
 
+  class TypeError < StandardError
+  end
+end
