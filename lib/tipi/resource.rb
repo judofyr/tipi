@@ -41,10 +41,20 @@ module Tipi
 
         orig = klass.instance_method(name)
         klass.send(:define_method, name) do |*args|
-          args[0] = input_type.dress(args[0]) if input_type && args.size > 0
-          res = orig.bind(self).call(*args)
-          res = output_type.dress(res) if output_type
-          res
+          begin
+            args[0] = input_type.dress(data = args[0]) if input_type && args.size > 0
+            res = orig.bind(self).call(*args)
+            res = output_type.dress(data = res) if output_type
+            res
+          rescue Finitio::TypeError => ex
+            raise TypeError.build(
+              message: ex.message,
+              location: ex.location,
+              resource: klass,
+              method_name: name,
+              data: data,
+            )
+          end
         end
       end
     end
@@ -87,4 +97,3 @@ module Tipi
     end
   end
 end
-
