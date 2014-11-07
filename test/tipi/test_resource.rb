@@ -25,6 +25,18 @@ module Tipi
       assert res.update(name: "Bob")
     end
 
+    it "handles input validation with arguments" do
+      sub = Class.new(Resource) do
+        input "{ name: String }", position: 1
+        def update(id, data)
+          true
+        end
+      end
+
+      res = sub.new({})
+      assert res.update(123, name: "Bob")
+    end
+
     it "handles output validation" do
       sub = Class.new(Resource) do
         output "{ name: String }"

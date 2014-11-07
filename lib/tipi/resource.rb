@@ -32,17 +32,19 @@ module Tipi
     end
 
     class ActionInfo
-      attr_accessor :input_type, :output_type, :option_keys, :stability
+      attr_accessor :input_type, :input_position, :output_type, :option_keys, :stability
 
       def decorate(klass, name)
         input_type = self.input_type
         output_type = self.output_type
         return if input_type.nil? && output_type.nil?
 
+        input_position = self.input_position || 0
+
         orig = klass.instance_method(name)
         klass.send(:define_method, name) do |*args|
           begin
-            args[0] = input_type.dress(data = args[0]) if input_type && args.size > 0
+            args[input_position] = input_type.dress(data = args[input_position]) if input_type
             res = orig.bind(self).call(*args)
             res = output_type.dress(data = res) if output_type
             res
@@ -71,8 +73,9 @@ module Tipi
       action_infos[name]
     end
 
-    def self.input(str)
+    def self.input(str, options = {})
       current_action_info.input_type = system.parse(str)
+      current_action_info.input_position = options[:position]
     end
 
     def self.output(str)
