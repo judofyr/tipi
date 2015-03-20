@@ -128,6 +128,10 @@ module Tipi
         res = mock_request.get('/params?a=%2F')
         assert_equal 200, res.status
         assert_equal '{"a":"/"}', res.body
+
+        res = mock_request.get('/params?a&&')
+        assert_equal 200, res.status
+        assert_equal '{"a":null}', res.body
       end
 
       it "handles post body" do
