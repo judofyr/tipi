@@ -60,7 +60,7 @@ module Tipi
       str.split('&').each do |part|
         key, value = part.split('=', 2)
         if keys.nil? || keys.include?(key)
-          value = URI.decode_www_form_component(value)
+          value = URI.decode_www_form_component(value) if !value.nil?
           res[key.to_sym] = value
         end
       end
