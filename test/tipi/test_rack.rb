@@ -17,6 +17,11 @@ module Tipi
           options
         end
 
+        input ".Hash"
+        def no_keys(options = {})
+          options
+        end
+
         class WeirdResponse
           def to_response
             [409,{},['Foo']]
@@ -74,6 +79,7 @@ module Tipi
           resource Root do
             get to: 'index'
             get '/params', to: 'params'
+            post '/no_keys', to: 'no_keys'
             get '/custom', to: 'custom'
             get '/initial_state', to: 'initial_state'
             path '/users', to: 'users', returns: Users
@@ -128,8 +134,12 @@ module Tipi
         res = mock_request.get('/params?a=%2F')
         assert_equal 200, res.status
         assert_equal '{"a":"/"}', res.body
-      end
 
+        res = mock_request.get('/params?a&&')
+        assert_equal 200, res.status
+        assert_equal '{"a":null}', res.body
+      end
+        
       it "handles post body" do
         res = mock_request.post('/users/123', input: '{"name":"Bob"}', "CONTENT_TYPE" => 'application/json')
         assert_equal 200, res.status
@@ -148,6 +158,12 @@ module Tipi
         assert_equal '{"name":"Bob"}', res.body
       end
 
+      it "handles weird post body" do
+        res = mock_request.post('/no_keys', input: 'name=bob&&a=&a&', "CONTENT_TYPE" => 'application/x-www-form-urlencoded')
+        assert_equal 200, res.status
+        assert_equal '{"name":"bob","a":null}', res.body
+      end
+
       it "can generate custom responses" do
         res = mock_request.get('/custom')
         assert_equal 409, res.status
@@ -156,12 +172,12 @@ module Tipi
 
       it "can set initial state" do
         app.setup_root = proc do |root, env|
-          root.state[:foo] = env['rack.version']
+          root.state[:foo] = 'initial state';
         end
 
         res = mock_request.get('/initial_state')
         assert_equal 200, res.status
-        assert_equal "[1,2]", res.body
+        assert_equal '"initial state"', res.body
       end
     end
   end
