@@ -172,12 +172,13 @@ module Tipi
 
       it "can set initial state" do
         app.setup_root = proc do |root, env|
-          root.state[:foo] = env['rack.version']
+          root.state[:foo] = 'initial state';
+          p env
         end
 
         res = mock_request.get('/initial_state')
         assert_equal 200, res.status
-        assert_equal "[1,2]", res.body
+        assert_equal '"initial state"', res.body
       end
     end
   end
