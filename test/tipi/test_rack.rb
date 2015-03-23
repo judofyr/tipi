@@ -17,6 +17,11 @@ module Tipi
           options
         end
 
+        input ".Hash"
+        def no_keys(options = {})
+          options
+        end
+
         class WeirdResponse
           def to_response
             [409,{},['Foo']]
@@ -74,6 +79,7 @@ module Tipi
           resource Root do
             get to: 'index'
             get '/params', to: 'params'
+            post '/no_keys', to: 'no_keys'
             get '/custom', to: 'custom'
             get '/initial_state', to: 'initial_state'
             path '/users', to: 'users', returns: Users
@@ -133,7 +139,7 @@ module Tipi
         assert_equal 200, res.status
         assert_equal '{"a":null}', res.body
       end
-
+        
       it "handles post body" do
         res = mock_request.post('/users/123', input: '{"name":"Bob"}', "CONTENT_TYPE" => 'application/json')
         assert_equal 200, res.status
@@ -150,6 +156,12 @@ module Tipi
         res = mock_request.post('/users/123', params: { name: "Bob" })
         assert_equal 200, res.status
         assert_equal '{"name":"Bob"}', res.body
+      end
+
+      it "handles weird post body" do
+        res = mock_request.post('/no_keys', input: 'name=bob&&a=&a&', "CONTENT_TYPE" => 'application/x-www-form-urlencoded')
+        assert_equal 200, res.status
+        assert_equal '{"name":"bob","a":null}', res.body
       end
 
       it "can generate custom responses" do
